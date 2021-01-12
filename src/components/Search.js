@@ -33,7 +33,8 @@ function Search() {
             let employeeHTML = `
                 <tr>
                     <td><img src="${el.picture.medium}"</td>
-                    <td>${el.name.first} ${el.name.last}</td>
+                    <td>${el.name.first}</td>
+                    <td>${el.name.last}</td>
                     <td>${el.phone}</td>
                     <td>${el.email}</td>
                     <td>${newDate}</td>
@@ -46,9 +47,8 @@ function Search() {
     const filterEmployees = () => {
         // If employees array is empty, do not run the filter
         if (employees.length !== 0) {
-            const filteredEmpArray = employees[0].filter(el => el.name.first.includes(search.search));
-            // console.log(employees);
-            // console.log(filteredEmpArray);
+            const searchStr = search.search.toLowerCase();
+            const filteredEmpArray = employees[0].filter(el => el.name.first.toLowerCase().includes(searchStr) || el.name.last.toLowerCase().includes(searchStr) || el.email.toLowerCase().includes(searchStr));
             renderTable(filteredEmpArray);
         }
     }
@@ -74,7 +74,7 @@ function Search() {
                 <div className="col-sm-4"></div>
                 <div className="col-sm-4">
                     <form>
-                    <input className="form-control" name="searchString" type="search" placeholder="Search" aria-label="Search" value={search.search}
+                    <input className="form-control" name="searchString" type="search" placeholder="Search (name or email)" aria-label="Search" value={search.search}
                     onChange={event => {
                         // Prevent the location from refreshing
                         event.preventDefault();
