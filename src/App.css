@@ -6,3 +6,8 @@
 .table.table-striped {
   margin-top: 20px;
 }
+
+.sort-alpha-down {
+  color: blue;
+  cursor: pointer;
+}
