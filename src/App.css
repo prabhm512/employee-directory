@@ -1,5 +1,5 @@
 .jumbotron.jumbotron-fluid {
-  background-color: navy;
+  background: linear-gradient(180deg, navy 95%, red 5%);
   color: white;
 }
 

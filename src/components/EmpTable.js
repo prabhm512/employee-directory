@@ -4,10 +4,32 @@ import API from '../utils/API';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 
-const employees = [];
+let employees = [];
 let filteredEmpArray = [];
 
 function EmpTable() {
+
+    // Get employee names from local storage so new list of employees is not rendered on every page reload
+    const init = () => {
+        let storedEmployees = JSON.parse(localStorage.getItem("employeeList"));
+
+        // Only fill the employees array if it is empty
+        if (storedEmployees !== null) {
+            employees = storedEmployees;
+            renderTable(employees[0]); 
+        } else {
+            // Make a GET request to the Random Users API
+            API.getRandomEmployees()
+                .then(res => {
+                    employees.push(res.data.results);
+                    storeEmployees();
+                })
+                .then(() => {
+                    renderTable(employees[0]);
+                })
+                .catch(err => console.log(err));
+        }
+    }
 
     // Manage state of Search box
     const [search, setSearch] = useState({search: ""});
@@ -106,16 +128,14 @@ function EmpTable() {
         }
     }
 
+    // Store all employees in localstorage
+    const storeEmployees = () => {
+        localStorage.setItem("employeeList", JSON.stringify(employees));
+    }
+
     useEffect(() => {
-        // Only fill the employees array if it is empty
         if (employees.length === 0) {
-            // Make a GET request to the Random Users API
-            API.getRandomEmployees()
-                .then(res => employees.push(res.data.results))
-                .then(() => {
-                    renderTable(employees[0]);
-                })
-                .catch(err => console.log(err));
+            init();
         } else {
             filterEmployees();
         }
@@ -123,12 +143,12 @@ function EmpTable() {
 
     return (
         <section>
-        <div className="container-sm">
+        <div className="container-sm searchForm">
             <div className="row">
                 <div className="col-sm-4"></div>
                 <div className="col-sm-4">
                     <form>
-                    <input className="form-control" name="searchString" type="search" placeholder="Search (name or email)" aria-label="Search" value={search.search}
+                    <input className="form-control searchInput" name="searchString" type="search" placeholder="Search (name or email)" aria-label="Search" value={search.search}
                     onChange={event => {
                         // Prevent the location from refreshing
                         event.preventDefault();
